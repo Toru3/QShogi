@@ -13,8 +13,10 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    boardview.cpp
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    boardview.h
 
 FORMS    += mainwindow.ui
