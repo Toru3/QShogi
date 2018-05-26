@@ -45,7 +45,7 @@ for j in kinki kinki_torafu ryoko ryoko_torafu dirty; do
     mkcd ${i}/${i}_${j}
     url=$root_url/$i/${i}_${j}
     for k in G S; do
-        for l in fu to kyo kei nkei gin ngin kin ou hi ryu kaku uma; do
+        for l in fu to kyo nkyo kei nkei gin ngin kin ou hi ryu kaku uma; do
             dl $url $k$l.png
         done
     done
