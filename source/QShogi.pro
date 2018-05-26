@@ -7,6 +7,7 @@
 QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+QMAKE_CXXFLAGS += -std=c++11
 
 TARGET = QShogi
 TEMPLATE = app
@@ -14,9 +15,15 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    boardview.cpp
+    boardview.cpp \
+    koma.cpp \
+    masu.cpp \
+    board.cpp
 
 HEADERS  += mainwindow.h \
-    boardview.h
+    boardview.h \
+    koma.h \
+    masu.h \
+    board.h
 
 FORMS    += mainwindow.ui

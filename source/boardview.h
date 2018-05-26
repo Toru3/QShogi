@@ -1,43 +1,27 @@
 #ifndef BOARDVIEW_H
 #define BOARDVIEW_H
 
+#include "board.h"
 #include <QGraphicsView>
 #include <QImage>
 #include <QRect>
 #include <QWidget>
+#include <array>
 
 class BoardView : public QGraphicsView
 {
 public:
-    BoardView(QWidget *parent = 0) : QGraphicsView(parent)
-    {
-      setAlpha(255);
-      mRect = QRect(0, 0, mQImage.width(), mQImage.height());
-    }
-
-    void paintEvent(QPaintEvent *)
-    {
-      QPainter qPainter(viewport());
-      QRect rect(0, 0, mQImage.width(), mQImage.height());
-      mQImage.load("image/ban/ban_kaya_a.png");
-      qPainter.drawImage(rect, mQImage, mRect, Qt::ColorOnly|Qt::DiffuseAlphaDither|Qt::PreferDither);
-      mQImage.load("image/masu/masu_dot_xy.png");
-      qPainter.drawImage(rect, mQImage, mRect, Qt::ColorOnly|Qt::DiffuseAlphaDither|Qt::PreferDither);
-   }
+    BoardView(QWidget *parent = 0);
+    void paintEvent(QPaintEvent *);
 
 private:
-    QImage mQImage;
-    QRect mRect;
-
-    void setAlpha(int alpha)
-    {
-      for (int x = 0, width = mQImage.width(); x < width; ++x)
-        for (int y = 0, height = mQImage.height(); y < height; ++y) {
-          QColor color(mQImage.pixel(x, y));
-          color.setAlpha(alpha);
-          mQImage.setPixel(x, y, color.rgba());
-        }
-    }
+    QImage mGameBoard;
+    QImage mGrid;
+    std::array<std::array<QImage, 14>, 2> komas;
+    Board board;
+    void setAlpha(int alpha);
+    void drawBoardGrid(QPainter& qPainter);
+    void drawKoma(QPainter& qPainter);
 };
 
 #endif // BOARDVIEW_H
