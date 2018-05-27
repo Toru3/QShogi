@@ -2,14 +2,14 @@
 umask 0022
 export LC_ALL='C' PATH="$(command -p getconf PATH):$PATH"
 
-if command -v wget; then
+if command -v wget >/dev/null; then
     dl(){
         if [ ! -e $2 ]; then
             wget -nv $1/$2 -O $2
             sleep 1
         fi
     }
-elif command -v curl; then
+elif command -v curl >/dev/null; then
     dl(){
         if [ ! -e $2 ]; then
             curl $1/$2 -o $2

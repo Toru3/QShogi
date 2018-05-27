@@ -2,18 +2,16 @@
 umask 0022
 export PATH="$(command -p getconf PATH):$PATH"
 
-if ! command -v qmake; then
+if ! command -v qmake >/dev/null; then
     echo "qmake is required."
     exit 1
-elif ! command -v make; then
+elif ! command -v make >/dev/null; then
     echo "make is required."
     exit 1
 fi
 
-./script/image_downloader.sh
-
+abs_path=$(cd `dirname "$0"`/../source && pwd)
 mkdir -p build
 cd build
-qmake ../source/QShogi.pro
+qmake $abs_path/QShogi.pro
 make
-cp ./QShogi ..

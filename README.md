@@ -8,12 +8,8 @@ Qtを用いた将棋のGUIソフトです. (pre-alpha version)
 * C++11 compiler
 * wget or curl (for download image)
 
-## Build
+## Setup & Run
 ```console
-$ ./script/build.sh
-```
-
-## Run
-```console
+$ ./script/setup.sh
 $ ./QShogi
 ```
