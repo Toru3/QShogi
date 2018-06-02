@@ -12,6 +12,10 @@ public:
     {
         return board[suji-1][dan-1];
     }
+    unsigned char mochi(int teban, int kind) const
+    {
+        return mochiGoma[teban][kind];
+    }
 
 private:
     std::array<std::array<Masu,9>,9> board;

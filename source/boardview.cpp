@@ -1,4 +1,10 @@
 #include "boardview.h"
+constexpr int komaWidth = 43;
+constexpr int komaHeight = 48;
+constexpr int boardWidth = 410;
+constexpr int boardHeight = 454;
+constexpr int mochiGomaKinds = 7;
+constexpr int komaDaiHeiht = komaHeight*mochiGomaKinds+3*(mochiGomaKinds-1);
 
 BoardView::BoardView(QWidget *parent) : QGraphicsView(parent)
 {
@@ -6,7 +12,7 @@ BoardView::BoardView(QWidget *parent) : QGraphicsView(parent)
     mGrid.load("image/masu/masu_dot_xy.png");
     const QString koma[14] = {
         "fu", "kyo",  "kei",  "gin",  "kaku", "hi", "kin", "ou",
-        "to", "nkyo", "nkeu", "ngin", "uma",  "ryu"
+        "to", "nkyo", "nkei", "ngin", "uma",  "ryu"
     };
     for(int i=0; i<2; i++){
         for(int j=0; j<14; j++){
@@ -28,10 +34,8 @@ void BoardView::paintEvent(QPaintEvent *)
 
 void BoardView::setAlpha(int alpha)
 {
-    const int width = mGameBoard.width();
-    const int height = mGameBoard.height();
-    for(int x=0; x<width; x++){
-        for(int y=0; y<height; y++){
+    for(int x=0; x<boardWidth; x++){
+        for(int y=0; y<boardHeight; y++){
             QColor color(mGameBoard.pixel(x, y));
             color.setAlpha(alpha);
             mGameBoard.setPixel(x, y, color.rgba());
@@ -41,35 +45,48 @@ void BoardView::setAlpha(int alpha)
 
 void BoardView::drawBoardGrid(QPainter& qPainter)
 {
-    constexpr int komaHeight = 48;
-    constexpr int mochiGomaKinds = 7;
-    constexpr int komaDaiHeiht = komaHeight*mochiGomaKinds+3*(mochiGomaKinds-1);
-    int offset_x = 0;
-    QRect gMochiGomaRect(0, 0, 45, komaDaiHeiht);
-    qPainter.drawImage(gMochiGomaRect, mGameBoard);
-    offset_x += 48;
-
-    QRect rect(offset_x, 0, mGameBoard.width(), mGameBoard.height());
-    qPainter.drawImage(rect, mGameBoard);
-    qPainter.drawImage(rect, mGrid);
-    offset_x += 410 + 3;
-
-    QRect sMochiGomaRect(offset_x, mGameBoard.height()-komaDaiHeiht, 45, komaDaiHeiht);
-    qPainter.drawImage(sMochiGomaRect, mGameBoard);
+    QRect gKomaDai(0, 0, komaWidth+2, komaDaiHeiht);
+    QRect boardRect(gKomaDai.width()+3, 0, boardWidth, boardHeight);
+    QRect sKomaDai(boardRect.x()+boardRect.width()+3, boardHeight-komaDaiHeiht, komaWidth+2, komaDaiHeiht);
+    qPainter.drawImage(gKomaDai, mGameBoard);
+    qPainter.drawImage(sKomaDai, mGameBoard);
+    qPainter.drawImage(boardRect, mGameBoard);
+    qPainter.drawImage(boardRect, mGrid);
 }
-
 
 void BoardView::drawKoma(QPainter& qPainter)
 {
-    const int width = komas[0][0].width();
-    const int height = komas[0][0].height();
+    constexpr int index[7] = {5, 4, 6, 3, 2, 1, 0};
+    for(int j=0; j<mochiGomaKinds; j++){
+        unsigned char n = board.mochi(1, index[j]);
+        if(n==0){ continue; }
+        QRect rect(0, (komaHeight+3)*(6-j), komaWidth, komaHeight);
+        qPainter.drawImage(rect, komas[1][index[j]]);
+        if(n>=2){
+            char s[4]={0};
+            sprintf(s, "%d", static_cast<int>(n));
+            qPainter.drawText(rect, s);
+        }
+    }
+    for(int j=0; j<mochiGomaKinds; j++){
+        unsigned char n = board.mochi(0, index[j]);
+        if(n==0){ continue; }
+        QRect rect(48+410+3, boardHeight-komaDaiHeiht+(komaHeight+3)*j, komaWidth, komaHeight);
+        qPainter.drawImage(rect, komas[0][index[j]]);
+        if(n>=2){
+            char s[4]={0};
+            sprintf(s, "%d", static_cast<int>(n));
+            qPainter.drawText(rect, s);
+        }
+    }
     for(int i=0; i<9; i++){
         for(int j=0; j<9; j++){
             const Masu& m = board(i+1, j+1);
-            if(!m.empty()){
-                QRect rect(48+width*(8-i)+11, height*j+11, width, height);
-                qPainter.drawImage(rect, komas[static_cast<int>(m.get_teban())][static_cast<int>(m.get_koma())]);
-            }
+            if(m.empty()){ continue; }
+            QRect rect(komaWidth+5+komaWidth*(8-i)+11, komaHeight*j+11, komaWidth, komaHeight);
+            int t = static_cast<int>(m.get_teban());
+            int k = static_cast<int>(m.get_koma());
+            qPainter.drawImage(rect, komas[t][k]);
         }
     }
 }
