@@ -3,3 +3,4 @@ QShogi
 image/
 build/
 build-QShogi-*/
+.syntastic_*_config
