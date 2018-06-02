@@ -2,7 +2,7 @@
 Qtを用いた将棋のGUIソフトです. (pre-alpha version)
 
 ## Dependency
-* Qt 4 or later
+* Qt 5
 * qmake
 * make
 * C++11 compiler
