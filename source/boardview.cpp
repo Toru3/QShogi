@@ -8,6 +8,7 @@ constexpr int komaDaiHeiht = komaHeight*mochiGomaKinds+3*(mochiGomaKinds-1);
 
 BoardView::BoardView(QWidget *parent) : QGraphicsView(parent)
 {
+    connect(this,SIGNAL(komaFocusChanged()),this->viewport(),SLOT(update()));
     mGameBoard.load("image/ban/ban_kaya_a.png");
     mGrid.load("image/masu/masu_dot_xy.png");
     const QString koma[14] = {
@@ -23,6 +24,9 @@ BoardView::BoardView(QWidget *parent) : QGraphicsView(parent)
             komas[i][j].load(path);
         }
     }
+    mFocus.load("image/focus/focus_bold_b.png");
+    focus.setX(-1);
+    focus.setY(-1);
 }
 
 void BoardView::paintEvent(QPaintEvent *)
@@ -30,6 +34,25 @@ void BoardView::paintEvent(QPaintEvent *)
     QPainter qPainter(viewport());
     drawBoardGrid(qPainter);
     drawKoma(qPainter);
+}
+
+void BoardView::mousePressEvent(QMouseEvent *event)
+{
+    if(event->button()==Qt::LeftButton){
+        const QPoint point = event->pos();
+        QRect gKomaDai(0, 0, komaWidth+2, komaDaiHeiht);
+        QRect boardRect(gKomaDai.width()+3, 0, boardWidth, boardHeight);
+        QRect sKomaDai(boardRect.x()+boardRect.width()+3,
+                       boardHeight-komaDaiHeiht, komaWidth+2, komaDaiHeiht);
+        if(gKomaDai.contains(point) || boardRect.contains(point) || sKomaDai.contains(point)){
+            focus = point;
+            emit komaFocusChanged();
+        }
+    }else if(event->button()==Qt::RightButton){
+        focus.setX(-1);
+        focus.setY(-1);
+        emit komaFocusChanged();
+    }
 }
 
 void BoardView::setAlpha(int alpha)
@@ -61,6 +84,7 @@ void BoardView::drawKoma(QPainter& qPainter)
         unsigned char n = board.mochi(1, index[j]);
         if(n==0){ continue; }
         QRect rect(0, (komaHeight+3)*(6-j), komaWidth, komaHeight);
+        if(rect.contains(focus)){ qPainter.drawImage(rect, mFocus); }
         qPainter.drawImage(rect, komas[1][index[j]]);
         if(n>=2){
             char s[4]={0};
@@ -72,6 +96,7 @@ void BoardView::drawKoma(QPainter& qPainter)
         unsigned char n = board.mochi(0, index[j]);
         if(n==0){ continue; }
         QRect rect(48+410+3, boardHeight-komaDaiHeiht+(komaHeight+3)*j, komaWidth, komaHeight);
+        if(rect.contains(focus)){ qPainter.drawImage(rect, mFocus); }
         qPainter.drawImage(rect, komas[0][index[j]]);
         if(n>=2){
             char s[4]={0};
@@ -84,6 +109,7 @@ void BoardView::drawKoma(QPainter& qPainter)
             const Masu& m = board(i+1, j+1);
             if(m.empty()){ continue; }
             QRect rect(komaWidth+5+komaWidth*(8-i)+11, komaHeight*j+11, komaWidth, komaHeight);
+            if(rect.contains(focus)){ qPainter.drawImage(rect, mFocus); }
             int t = static_cast<int>(m.get_teban());
             int k = static_cast<int>(m.get_koma());
             qPainter.drawImage(rect, komas[t][k]);

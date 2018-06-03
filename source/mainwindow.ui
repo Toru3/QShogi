@@ -82,6 +82,7 @@
    <extends>QGraphicsView</extends>
    <header>boardview.h</header>
    <slots>
+    <signal>komaFocusChanged()</signal>
     <slot>paint()</slot>
    </slots>
   </customwidget>
