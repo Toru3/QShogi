@@ -3,6 +3,7 @@
 
 #include "masu.h"
 #include <array>
+#include <QDebug>
 
 class Board
 {
@@ -15,6 +16,18 @@ public:
     unsigned char mochi(int teban, int kind) const
     {
         return mochiGoma[teban][kind];
+    }
+    bool move(int from_suji, int from_dan, int to_suji, int to_dan)
+    {
+        Masu t = (*this)(from_suji, from_dan);
+        set(to_suji, to_dan) = t;
+        set(from_suji, from_dan) = Masu();
+        qDebug() << QStringLiteral("%1%2%3%4%5%6")
+            .arg((t.get_teban()==Teban::SENTE ? "+" : "-"))
+            .arg(from_suji).arg(from_dan)
+            .arg(to_suji).arg(to_dan)
+            .arg(to_csa(t.get_koma()));
+        return true;
     }
 
 private:

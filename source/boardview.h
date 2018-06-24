@@ -29,6 +29,7 @@ private:
     QImage mFocus;
     Board board;
     QPoint focus;
+    QPoint focused_grid;
     void setAlpha(int alpha);
     void drawBoardGrid(QPainter& qPainter);
     void drawKoma(QPainter& qPainter);
