@@ -26,6 +26,7 @@ private:
     {
         return board[suji-1][dan-1];
     }
+    bool checkMove(int from_suji, int from_dan, int to_suji, int to_dan);
 };
 
 #endif // BOARD_H

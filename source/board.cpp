@@ -56,11 +56,43 @@ Board::Board()
 #endif
 }
 
+bool Board::checkMove(int from_suji, int from_dan, int to_suji, int to_dan)
+{
+    bool goteKomaUchi = from_suji==0 && 0<=from_dan && from_dan<=6;
+    bool senteKomaUchi = from_suji==10 && 3<=from_dan && from_dan<=9;
+    constexpr auto in_area = [](int s, int d){ return 1<=s && s<=9 && 1<=d && d<=9; };
+    if(!in_area(to_suji, to_dan)){
+        qDebug("Outsize.");
+        return false;
+    }
+    if(senteKomaUchi){
+        bool haveKoma = mochiGoma[0][from_dan]>0;
+        bool empty = board[to_suji][to_dan].empty();
+        qDebug() << "senteKomaUchi" << haveKoma << empty;
+        return haveKoma && empty;
+    }else if(goteKomaUchi){
+        bool haveKoma = mochiGoma[1][9-from_dan]>0;
+        bool empty = board[to_suji][to_dan].empty();
+        qDebug() << "goteKomaUchi" << haveKoma << empty;
+        return haveKoma && empty;
+    }else if(in_area(from_suji, from_dan)){
+        const Masu& from = (*this)(from_suji, from_dan);
+        const Masu& to = (*this)(to_suji, to_dan);
+        bool tomoGui = !to.empty() && from.get_teban() == to.get_teban();
+        bool nullMove = (*this)(from_suji, from_dan).empty();
+        qDebug() << "move" << tomoGui << nullMove;
+        return !(tomoGui || nullMove);
+    }
+    return false;
+}
+
 bool Board::move(int from_suji, int from_dan, int to_suji, int to_dan)
 {
-    if(from_suji==to_suji && from_dan==to_dan){ return false; }
+    if(!checkMove(from_suji, from_dan, to_suji, to_dan)){
+        qDebug("Illigal move.");
+        return false;
+    }
     const Masu& from = (*this)(from_suji, from_dan);
-    if(from.empty()){ return false; }
     const Masu& to = (*this)(to_suji, to_dan);
     if(!to.empty()){
         mochiGoma[1-static_cast<size_t>(to.get_teban())][static_cast<size_t>(to.get_koma())]++;
