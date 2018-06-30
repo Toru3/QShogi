@@ -56,7 +56,7 @@ Board::Board()
 #endif
 }
 
-bool move(int from_suji, int from_dan, int to_suji, int to_dan)
+bool Board::move(int from_suji, int from_dan, int to_suji, int to_dan)
 {
     if(from_suji==to_suji && from_dan==to_dan){ return false; }
     const Masu& from = (*this)(from_suji, from_dan);
