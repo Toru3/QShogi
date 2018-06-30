@@ -56,3 +56,21 @@ Board::Board()
 #endif
 }
 
+bool move(int from_suji, int from_dan, int to_suji, int to_dan)
+{
+    if(from_suji==to_suji && from_dan==to_dan){ return false; }
+    const Masu& from = (*this)(from_suji, from_dan);
+    if(from.empty()){ return false; }
+    const Masu& to = (*this)(to_suji, to_dan);
+    if(!to.empty()){
+        mochiGoma[1-static_cast<size_t>(to.get_teban())][static_cast<size_t>(to.get_koma())]++;
+    }
+    set(to_suji, to_dan) = from;
+    set(from_suji, from_dan) = Masu();
+    qDebug() << QStringLiteral("%1%2%3%4%5%6")
+        .arg((from.get_teban()==Teban::SENTE ? "+" : "-"))
+        .arg(from_suji).arg(from_dan)
+        .arg(to_suji).arg(to_dan)
+        .arg(to_csa(from.get_koma()));
+    return true;
+}
