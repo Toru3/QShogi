@@ -6,6 +6,7 @@
 
 QT       += core gui widgets
 CONFIG += c++11
+CONFIG += debug
 
 TARGET = QShogi
 TEMPLATE = app
