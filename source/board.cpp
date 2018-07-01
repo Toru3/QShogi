@@ -62,7 +62,7 @@ bool Board::checkMove(int from_suji, int from_dan, int to_suji, int to_dan)
     bool senteKomaUchi = from_suji==10 && 3<=from_dan && from_dan<=9;
     constexpr auto in_area = [](int s, int d){ return 1<=s && s<=9 && 1<=d && d<=9; };
     if(!in_area(to_suji, to_dan)){
-        qDebug("Outsize.");
+        qDebug("Outside.");
         return false;
     }
     if(senteKomaUchi){
