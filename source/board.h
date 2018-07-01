@@ -32,7 +32,7 @@ private:
         Q_ASSERT(1<=dan && dan<=9);
         return board[suji-1][dan-1];
     }
-    bool checkMove(int from_suji, int from_dan, int to_suji, int to_dan);
+    bool checkMove(int from_suji, int from_dan, int to_suji, int to_dan) const;
 };
 
 #endif // BOARD_H

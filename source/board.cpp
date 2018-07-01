@@ -56,7 +56,7 @@ Board::Board()
 #endif
 }
 
-bool Board::checkMove(int from_suji, int from_dan, int to_suji, int to_dan)
+bool Board::checkMove(int from_suji, int from_dan, int to_suji, int to_dan) const
 {
     bool goteKomaUchi = from_suji==0 && 0<=from_dan && from_dan<=6;
     bool senteKomaUchi = from_suji==10 && 3<=from_dan && from_dan<=9;
