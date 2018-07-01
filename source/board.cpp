@@ -103,6 +103,6 @@ bool Board::move(int from_suji, int from_dan, int to_suji, int to_dan)
         .arg((from.get_teban()==Teban::SENTE ? "+" : "-"))
         .arg(from_suji).arg(from_dan)
         .arg(to_suji).arg(to_dan)
-        .arg(to_csa(from.get_koma()));
+        .arg(to_csa(to.get_koma()));
     return true;
 }
