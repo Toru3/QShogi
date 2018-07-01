@@ -66,13 +66,13 @@ bool Board::checkMove(int from_suji, int from_dan, int to_suji, int to_dan) cons
         return false;
     }
     if(senteKomaUchi){
-        bool haveKoma = mochiGoma[0][from_dan]>0;
-        bool empty = board[to_suji][to_dan].empty();
+        bool haveKoma = mochiGoma[0][static_cast<size_t>(kindToKoma(9-from_dan))]>0;
+        bool empty = (*this)(to_suji, to_dan).empty();
         qDebug() << "senteKomaUchi" << haveKoma << empty;
         return haveKoma && empty;
     }else if(goteKomaUchi){
-        bool haveKoma = mochiGoma[1][9-from_dan]>0;
-        bool empty = board[to_suji][to_dan].empty();
+        bool haveKoma = mochiGoma[1][static_cast<size_t>(kindToKoma(from_dan))]>0;
+        bool empty = (*this)(to_suji, to_dan).empty();
         qDebug() << "goteKomaUchi" << haveKoma << empty;
         return haveKoma && empty;
     }else if(in_area(from_suji, from_dan)){
@@ -92,17 +92,27 @@ bool Board::move(int from_suji, int from_dan, int to_suji, int to_dan)
         qDebug("Illigal move.");
         return false;
     }
-    const Masu& from = (*this)(from_suji, from_dan);
     const Masu& to = (*this)(to_suji, to_dan);
-    if(!to.empty()){
-        mochiGoma[1-static_cast<size_t>(to.get_teban())][static_cast<size_t>(to.get_koma())]++;
+    if(from_suji==10){
+        Koma k = kindToKoma(9-from_dan);
+        mochiGoma[static_cast<size_t>(Teban::SENTE)][static_cast<size_t>(k)]--;
+        set(to_suji, to_dan) = Masu(k, Teban::SENTE);
+    }else if(from_suji==0){
+        Koma k = kindToKoma(from_dan);
+        mochiGoma[static_cast<size_t>(Teban::GOTE)][static_cast<size_t>(k)]--;
+        set(to_suji, to_dan) = Masu(k, Teban::GOTE);
+    }else{
+        const Masu& from = (*this)(from_suji, from_dan);
+        if(!to.empty()){
+            mochiGoma[1-static_cast<size_t>(to.get_teban())][static_cast<size_t>(to.get_koma())&7]++;
+        }
+        set(to_suji, to_dan) = from;
+        set(from_suji, from_dan) = Masu();
+        qDebug() << QStringLiteral("%1%2%3%4%5%6")
+            .arg((from.get_teban()==Teban::SENTE ? "+" : "-"))
+            .arg(from_suji).arg(from_dan)
+            .arg(to_suji).arg(to_dan)
+            .arg(to_csa(to.get_koma()));
     }
-    set(to_suji, to_dan) = from;
-    set(from_suji, from_dan) = Masu();
-    qDebug() << QStringLiteral("%1%2%3%4%5%6")
-        .arg((from.get_teban()==Teban::SENTE ? "+" : "-"))
-        .arg(from_suji).arg(from_dan)
-        .arg(to_suji).arg(to_dan)
-        .arg(to_csa(to.get_koma()));
     return true;
 }

@@ -33,6 +33,12 @@ private:
         return board[suji-1][dan-1];
     }
     bool checkMove(int from_suji, int from_dan, int to_suji, int to_dan) const;
+    static Koma kindToKoma(int k){
+        static Koma table[] = {
+            Koma::FU, Koma::KYO, Koma::KEI, Koma::GIN, Koma::KIN, Koma::KAKU, Koma::HI
+        };
+        return table[k];
+    }
 };
 
 #endif // BOARD_H
